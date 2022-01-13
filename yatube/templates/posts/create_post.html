@@ -18,10 +18,10 @@
                 <div class="form-group row my-3 p-3">
                   <label for="id_text">Текст поста<span class="required text-danger" >*</span></label>
                   {{ form.text }}
-                  <span class="helptext text-muted">Текст нового поста</span>
+                  <span class="helptext text-muted">{{ text }}</span>
                 </div>
                 <div class="form-group row my-3 p-3">
-                  <label for="id_group">Group</label>
+                  <label for="id_group">Группа</label>
                   {{ form.group }}
                   <span class="helptext text-muted">Группа, к которой будет относиться пост</span>
                 </div>

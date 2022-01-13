@@ -11,18 +11,9 @@ User = get_user_model()
 
 def index(request):
     post_list = Post.objects.all()
-    # Если порядок сортировки определен в классе Meta модели,
-    # запрос будет выглядить так:
-    # post_list = Post.objects.all()
-    # Показывать по 10 записей на странице.
     paginator = Paginator(post_list, NUM_POST)
-
-    # Из URL извлекаем номер запрошенной страницы - это значение параметра page
     page_number = request.GET.get('page')
-
-    # Получаем набор записей для страницы с запрошенным номером
     page_obj = paginator.get_page(page_number)
-    # Отдаем в словаре контекста
     context = {
         'page_obj': page_obj,
     }
@@ -63,7 +54,14 @@ def post_detail(request, post_id):
     }
     return render(request, 'posts/post_detail.html', context)
 
+def authorized_only(func):
+    def check_user(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return func(request, *args, **kwargs)
+        return redirect('/auth/login/')        
+    return check_user   
 
+@authorized_only
 def post_create(request):
     form = PostForm(request.POST or None)
     if form.is_valid():
@@ -78,7 +76,7 @@ def post_create(request):
     }
     return render(request, 'posts/create_post.html', context)
 
-
+@authorized_only
 def post_edit(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     form = PostForm(request.POST or None, instance=post)
