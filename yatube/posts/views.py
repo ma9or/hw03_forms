@@ -54,12 +54,14 @@ def post_detail(request, post_id):
     }
     return render(request, 'posts/post_detail.html', context)
 
+
 def authorized_only(func):
     def check_user(request, *args, **kwargs):
         if request.user.is_authenticated:
             return func(request, *args, **kwargs)
-        return redirect('/auth/login/')        
-    return check_user   
+        return redirect('/auth/login/')
+    return check_user
+
 
 @authorized_only
 def post_create(request):
@@ -75,6 +77,7 @@ def post_create(request):
         'username': request.user
     }
     return render(request, 'posts/create_post.html', context)
+
 
 @authorized_only
 def post_edit(request, post_id):
