@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Group
 from django.contrib.auth import get_user_model
 from .forms import PostForm
+from django.contrib.auth.decorators import login_required
 
 NUM_POST = 10
 
@@ -55,15 +56,7 @@ def post_detail(request, post_id):
     return render(request, 'posts/post_detail.html', context)
 
 
-def authorized_only(func):
-    def check_user(request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return func(request, *args, **kwargs)
-        return redirect('/auth/login/')
-    return check_user
-
-
-@authorized_only
+@login_required
 def post_create(request):
     form = PostForm(request.POST or None)
     if form.is_valid():
@@ -79,7 +72,7 @@ def post_create(request):
     return render(request, 'posts/create_post.html', context)
 
 
-@authorized_only
+@login_required
 def post_edit(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     form = PostForm(request.POST or None, instance=post)
