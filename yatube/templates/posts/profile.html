@@ -21,10 +21,11 @@
             {{ post.text }}
           </p>
           <a href="{% url 'posts:post_detail' post.id %}">подробная информация </a>
-        </article>       
-        <a href="{% url 'posts:group_posts' post.group.slug %}">все записи группы</a>        
+        </article>
+        {% if post.group_id != NULL %}      
+        <a href="{% url 'posts:group_posts' post.group.slug %}">все записи группы</a> 
+        {% endif %}     
         <hr>
-       
       </div>
       {% if not forloop.last %}<hr>{% endif %}
 

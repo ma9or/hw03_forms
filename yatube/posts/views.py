@@ -1,9 +1,10 @@
-from django.core.paginator import Paginator
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post, Group
 from django.contrib.auth import get_user_model
-from .forms import PostForm
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, render, redirect
+from django.views.decorators.http import require_http_methods
+from .forms import PostForm
+from .models import Post, Group
 
 NUM_POST = 10
 
@@ -57,6 +58,7 @@ def post_detail(request, post_id):
 
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def post_create(request):
     form = PostForm(request.POST or None)
     if form.is_valid():
@@ -73,6 +75,7 @@ def post_create(request):
 
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def post_edit(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     form = PostForm(request.POST or None, instance=post)
