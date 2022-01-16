@@ -37,7 +37,8 @@ def group_posts(request, slug):
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    posts = author.posts.all()
+    posts = (Post.objects.select_related('group', 'author')
+             .filter(author=author))
     paginator = Paginator(posts, NUM_POST)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
